@@ -1,0 +1,44 @@
+﻿<Window x:Class="TestLazyLoad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestLazyLoad"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="32">
+        <Grid MinHeight="40" VerticalAlignment="Top">
+            <TextBlock Text="ทดสอบ" FontSize="20" VerticalAlignment="Center" Margin="40,0,0,0"/>
+        </Grid>
+        <ItemsControl ItemsSource="{Binding Datas}" Margin="0,40,0,0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <Border x:Name="BorderOperator"
+                            BorderThickness="{TemplateBinding Border.BorderThickness}" 
+                            Padding="{TemplateBinding Control.Padding}" 
+                            BorderBrush="{TemplateBinding Border.BorderBrush}" 
+                            Background="{TemplateBinding Panel.Background}"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer  x:Name="ScrollViewerOperator" 
+                                           VerticalScrollBarVisibility="Hidden"
+                                HorizontalScrollBarVisibility="Disabled"
+                                Padding="{TemplateBinding Control.Padding}"
+                                Focusable="False" >
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate >
+                    <local:RowData />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</Window>
