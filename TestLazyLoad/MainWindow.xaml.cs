@@ -44,14 +44,12 @@ namespace TestLazyLoad
         string _State = "Loading";
 
 
-        public int Id { get; private set; }
         private readonly Lazy<ArabeModel> _Model = null;
         public ArabeModel Model => _Model.Value;
 
 
         public DataLazyViewModel(int Id)
         {
-            this.Id = Id;
             _Model = new Lazy<ArabeModel>(() => 
             {
                 var Result = Loader.GetDataAsync(Id).Result;
