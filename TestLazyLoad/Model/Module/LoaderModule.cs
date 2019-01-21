@@ -6,7 +6,7 @@ namespace TestLazyLoad.Model.Module
     {
         public override void Load()
         {
-            Bind<DataLoader>().ToConstant(new DataLoader());
+            Bind<DataStorage>().ToConstant(new DataStorage());
         }
     }
 }

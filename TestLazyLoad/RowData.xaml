@@ -7,7 +7,7 @@
              xmlns:m="clr-namespace:TestLazyLoad.Model"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="728">
-    <Grid m:StateVisualBinder.CurrentState="{Binding State}">
+    <Grid m:StateVisualBinder.CurrentState="{Binding State,IsAsync=True}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="VisualStateGroup">
                 <VisualStateGroup.Transitions>
@@ -44,8 +44,8 @@
                     <Border Height="28" Width="28" CornerRadius="4" Background="Red"/>
                 </Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="40,0,0,0">
-                    <TextBlock Text="{Binding Id}" FontSize="16"/>
-                    <TextBlock Text="{Binding Name}" FontSize="16" Margin="8,0,0,0"/>
+                    <TextBlock Text="{Binding Model.Id, IsAsync=True}" FontSize="16"/>
+                    <TextBlock Text="{Binding Model.Name, IsAsync=True}" FontSize="16" Margin="8,0,0,0"/>
                 </StackPanel>
                 
             </Grid>

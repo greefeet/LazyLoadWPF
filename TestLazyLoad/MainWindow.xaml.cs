@@ -14,67 +14,53 @@ namespace TestLazyLoad
     {
         public MainWindow()
         {
-            MainViewModel ViewModel = IoC.Get<MainViewModel>();
-            DataContext = ViewModel;
+            DataContext = IoC.Get<MainViewModel>();
             InitializeComponent();
-
-            Loaded += (s, e) => 
-            {
-                ViewModel.Init();
-            };
         }
     }
 
     public class MainViewModel : BindableBase
     {
         [Inject]
-        public DataLoader Loader { private get;  set; }
+        public DataStorage Loader { private get;  set; }
 
-        public async void Init()
+        public MainViewModel()
         {
-            Loader = new DataLoader();
-            var dd = await Loader.GetDataAsync();
-            Datas = new ObservableCollection<DataLazyViewModel>(from d in dd select IoC.Get<DataLazyViewModel>(new ConstructorArgument("Id", d)));
+            _Datas = new Lazy<ObservableCollection<DataLazyViewModel>>(
+                () => new ObservableCollection<DataLazyViewModel>(from d in Loader.GetData() select IoC.Get<DataLazyViewModel>(new ConstructorArgument("Id", d)))
+            , true);
         }
-        public ObservableCollection<DataLazyViewModel> Datas { get => _Datas; set => SetProperty(ref _Datas,value,nameof(Datas)); }
-        ObservableCollection<DataLazyViewModel> _Datas;
+        public ObservableCollection<DataLazyViewModel> Datas => _Datas.Value;
+        private readonly Lazy<ObservableCollection<DataLazyViewModel>> _Datas;
     }
-
     
-
-    
-
     public class DataLazyViewModel : BindableBase
     {
         [Inject]
-        public DataLoader Loader { private get; set; }
+        public DataStorage Loader { private get; set; }
 
-        public int Id { get; set; }
-        public string Name { get => _Name; set => SetProperty(ref _Name,value,nameof(Name)); }
-        string _Name;
 
         public string State { get => _State; set => SetProperty(ref _State, value, nameof(State)); }
         string _State = "Loading";
 
 
-        private Lazy<ArabeModel> Model = null;
+        public int Id { get; private set; }
+        private readonly Lazy<ArabeModel> _Model = null;
+        public ArabeModel Model => _Model.Value;
+
 
         public DataLazyViewModel(int Id)
         {
             this.Id = Id;
-            State = "Loading";
-            Name = "";
-            Model = new Lazy<ArabeModel>(() => GetData());
-        }
-
-        public ArabeModel GetData()
-        {
-            // https://www.codeproject.com/Articles/652556/Can-you-explain-Lazy-Loading
-            var Result = Loader.GetDataAsync(Id).Result;
-            Name = Result.Name;
-            return Result;
+            _Model = new Lazy<ArabeModel>(() => 
+            {
+                var Result = Loader.GetDataAsync(Id).Result;
+                State = "Display";
+                return Result;
+            },true);
         }
     }
+
     public class ArabeModel
     {
         public int Id { get; set; }
