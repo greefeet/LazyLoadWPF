@@ -56,27 +56,23 @@ namespace TestLazyLoad
         public string State { get => _State; set => SetProperty(ref _State, value, nameof(State)); }
         string _State = "Loading";
 
+
+        private Lazy<ArabeModel> Model = null;
+
         public DataLazyViewModel(int Id)
         {
             this.Id = Id;
             State = "Loading";
             Name = "";
-            MockLoad();
+            Model = new Lazy<ArabeModel>(() => GetData());
         }
 
-        public Lazy<ArabeModel> Blogs => new Lazy<ArabeModel>(() => GetBlogDetailsForAuthor(this.Id));
-        private ArabeModel GetBlogDetailsForAuthor(int Id)
+        public ArabeModel GetData()
         {
+            // https://www.codeproject.com/Articles/652556/Can-you-explain-Lazy-Loading
             var Result = Loader.GetDataAsync(Id).Result;
+            Name = Result.Name;
             return Result;
-        }
-
-        public async void MockLoad()
-        {
-            
-            State = "Display";
-            await Task.Delay(1000);
-            Name = "Arabe";
         }
     }
     public class ArabeModel

@@ -39,7 +39,7 @@ namespace TestLazyLoad.Model
 
         public async Task<ArabeModel> GetDataAsync(int Id)
         {
-            await Task.Delay(100);
+            await Task.Delay(1000);
             return DataStore[Id];
         }
     }
